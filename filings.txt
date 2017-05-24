@@ -1,0 +1,187 @@
+CFR Form/Schedule/Rule	Submission Type	Description
+Form 3	3	Initial statement of beneficial ownership of securities
+Form 4	4	Statement of changes in beneficial ownership of securities
+6-K	6-K	Current report of foreign issuer pursuant to Rules 13a-16 and 15d-16
+8-K	8-K	Current report filing
+	8-K12B	Notification that a class of securities of successor issuer is deemed to be registered pursuant to Section 12(b)
+	8-K12G3	Notification that a class of securities of successor issuer is deemed to be registered pursuant to Section 12(g)
+	8-K15D5	Notification of assumption of duty to report by successor issue under Section 15(d)
+10-K	10-K	Annual report pursuant to Section 13 and 15(d)
+	10-KT	Transition report pursuant to Rule 13a-10 or 15d-10
+	10-K405	"An officer or director of a public company failed to file a Form 4 (or related Form 3 or Form 5) on time, in violation of Section 16"
+10-Q	10-Q	Quarterly report pursuant to Sections 13 or 15(d)
+	10-QT	Transition report pursuant to Rule 13a-10 or 15d-10
+11-K	11-K	"Annual report of employee stock purchase, savings and similar plans"
+	11-KT	Transition report pursuant to rule 13a-10 or 15d-10
+12b-25	NT 10-Q	Notice under Rule 12b25 of inability to timely file all or part of a form 10-Q or 10-QSB
+	NT 10-K	"Notice under Rule 12b25 of inability to timely file all or part of a form 10-K, 10-KSB, or 10-KT"
+	NT 10-D	Notice under Rule 12b25 of inability to timely file all or part of a Form 10-D
+	NT 11-K	Notice under Rule 12b25 of inability to timely file all or part of a form 11-K
+	NT 15D2	Notice under Rule 12b25 of inability to timely file a special report pursuant to Section 15d-2
+	NT 20-F	Notice under Rule 12b25 of inability to timely file all or part of an annual report of form 20-F
+Schedule 13D	SC 13D	Schedule filed to report acquisition of beneficial ownership of 5% or more of a class of equity securities
+Form 13F	13F-HR	Initial Quarterly Form 13F Holdings or Combination Report filed by institutional managers 
+	13F-NT	Initial Quarterly Form 13F Notice Report filed by institutional managers
+Schedule 13G	SC 13G	Schedule filed to report acquisition of beneficial ownership of 5% or more of a class of equity securities by passive investors and certain institutions
+13H	13H	Large Trader Registration Information Required of Large Traders Pursuant to the Securities Exchange Act of 1934 and Rule 13h-1 Thereunder
+	13H-Q	Amended Filing
+	13H-A	Annual Filing
+	13H-I	Inactive Status
+	13H-R	Reactivated Status
+	13H-T	Termination Filing
+20-F	20-F	Annual and transition report of foreign private issuers pursuant to Section 13 or 15(d)
+	20FR12B	Form for initial registration of a class of securities of foreign private issuers pursuant to Section 12(b)
+	20FR12G	Form for initial registration of a class of securities of foreign private issuers pursuant to Section 12(g)
+144	144	Filing for proposed sale of securities under Rule 144
+424B	424B1	Prospectus filed pursuant to Rule 424(b)(1)
+	424B2	Prospectus filed pursuant to Rule 424(b)(2)
+	424B3	Prospectus filed pursuant to Rule 424(b)(3)
+	424B4	Prospectus filed pursuant to Rule 424(b)(4)
+	424B5	Prospectus filed pursuant to Rule 424(b)(5)
+	424B6	Prospectus filed pursuant to Rule 424(b)(6)
+	424B7	Prospectus filed pursuant to Rule 424(b)(7)
+	424B8	Prospectus filed pursuant to Rule 424(b)(8)
+F-1	F-1	Registration statement for securities of certain foreign private issuers
+	POS AM	Post-effective amendment to a registration statement that is not immediately effective upon filing
+	F-1MEF	A new registration statement filed under Rule 462(b) to add securities to a prior related effective registration statement filed on Form F-1
+	POS462B	Post-effective amendment to Securities Act Rule 462(b) registration statement
+F-3	F-3	Registration statement for specified transactions by certain foreign private issuers
+	POS AM	Post-effective amendment to a registration statement that is not immediately effective upon filing
+	F-3ASR	Automatic shelf registration statement of securities of well-known seasoned issuers
+	POSASR	Post-effective Amendment to an automatic shelf registration statement on Form S-3ASR or Form F-3ASR
+	F-3D	Registration statement for dividend or interest reinvestment plan securities of foreign private issuers
+	F-3DPOS	Post-Effective amendment to a F-3D registration
+	F-3MEF	A new registration statement filed under Rule 462(b) to add securities to a prior related effective registration statement filed on Form F-3
+	POS462B	Post-effective amendment to Securities Act Rule 462(b) registration statement
+F-6	F-6	Registration statement for American Depositary Receipts representing securities of certain foreign private issuers
+	POS AM	Post-effective amendment to a registration statement that is not immediately effective upon filing
+	F 6EF	Auto effective registration statement for American Depositary Receipts representing securities of certain foreign private issuers
+	F-6 POS	Post-effective amendment to a F-6EF registration
+N-1A	N-1A	Initial registration statement filed on Form N-1A for open-end management investment companies
+	485APOS	Post-effective amendment filed pursuant to Securities Act Rule 485(a) (this filing cannot be submitted as a 1940 Act only filing)
+	485BPOS	Post-effective amendment filed pursuant to Securities Act Rule 485(b) (this filing cannot be submitted as a 1940 Act only filing)
+	POS AMI	Post-effective amendment (for filings made under the 1940 Act only)
+	485BXT	Post-effective amendment filed pursuant to Securities Act Rule 485(b)(1)(iii) to designate a new effective date for a post-effective amendment previously filed pursuant to Securities Act Rule 485(a) (this filing cannot be submitted as a 1940 Act only filing)
+	497	"Definitive materials filed under paragraph (a), (b), (c), (d), (e) or (f) of Securities Act Rule 497"
+	497J	Certification of no change in definitive materials under paragraph (j) of Securities Act Rule 497
+Form N-2	N-2	Initial filing of a registration statement on Form N-2 for closed-end investment companies
+	POS AMI	Post-effective amendment (for filings made under the 1940 Act only)
+	POS 8C	Post-effective amendment filed under the 1933 Act only or under both the 1933 and 1940 Acts pursuant to Section 8(c) of the 1933 Act by closed-end investment companies (this filing cannot be submitted as a 1940 Act only filing)
+	486APOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(a)
+	486BPOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(b)
+	497	"Definitive materials filed under paragraph (a), (b), (c), (d), (e) or (f) of Securities Act Rule 497"
+	497J	Certification of no change in definitive materials
+	N-2MEF	A new registration statement on Form N-2 filed under Securities Act Rule 462(b) by closed-end investment companies of up to an additional 20% of securities for an offering that was registered on Form N-2
+	POS462B	Post-effective amendment to Securities Act Rule 462(b) registration statement
+	POS462C	Post-effective amendment to a registration statement filed under Securities Act Rule 462(c)
+	POS EX	Post-effective amendment filed solely to add exhibits to a registration statement
+	497H2	Filings made pursuant to Rule 497(h)(2)
+Form N-3	N-3	Initial registration statement on Form N-3 for separate accounts (management investment companies)
+	485APOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(a)
+	485BPOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(b)
+	POS AMI	Post-effective amendment (for filings made under the 1940 Act only)
+	485BXT	Post-effective amendment filed pursuant to Securities Act Rule 485(b)(1)(iii) to designate a new effective date for a post-effective amendment previously filed pursuant to Securities Act Rule 485(a) (this filing cannot be submitted as a 1940 Act only filing)
+	497	"Definitive materials filed under paragraph (a), (b), (c), (d), (e) or (f) of Securities Act Rule 497"
+	497J	Certification of no change in definitive materials
+Form N-4	N-4	Initial registration statement on Form N-4 for separate accounts (unit investment trusts)
+	487	Pre-effective pricing amendment filed pursuant to Securities Act Rule 487
+	485APOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(a)
+	485BPOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(b)
+	485BXT	Post-effective amendment filed pursuant to Securities Act Rule 485(b)(1)(iii) to designate a new effective date for a post-effective amendment previously filed pursuant to Securities Act Rule 485(a) (this filing cannot be submitted as a 1940 Act only filing)
+	POS AMI	Post-effective amendment (for filings made under the 1940 Act only)
+	497	"Definitive materials filed under paragraph (a), (b), (c), (d), (e) or (f) of Securities Act Rule 497"
+	497J	Certification of no change in definitive materials
+Form N-5	N-5	Registration statement for small business investment companies
+	POS AMI	Post-effective amendment (for filings made under the 1940 Act only)
+	POS 8C	Post-effective amendment filed under the 1933 Act only or under both the 1933 and 1940 Acts pursuant to Section 8(c) of the 1933 Act by closed-end investment companies (this filing cannot be submitted as a 1940 Act only filing)
+	497	"Definitive materials filed under paragraph (a), (b), (c), (d), (e) or (f) of Securities Act Rule 497"
+	497J	Certification of no change in definitive materials
+Form N-6	N-6	Registration statement for separate accounts (unit investment trusts)
+	487	Pre-effective pricing amendment filed pursuant to Securities Act Rule 487
+	485APOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(a)
+	485BPOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(b)
+	485BXT	Post-effective amendment filed pursuant to Securities Act Rule 485(b)(1)(iii) to designate a new effective date for a post-effective amendment previously filed pursuant to Securities Act Rule 485(a) (this filing cannot be submitted as a 1940 Act only filing)
+	POS AMI	Post-effective amendment (for filings made under the 1940 Act only)
+	497	"Definitive materials filed under paragraph (a), (b), (c), (d), (e) or (f) of Securities Act Rule 497"
+	497J	Certification of no change in definitive materials
+	N-6EI-1	Notification of Claim of Exemption Pursuant to Rule 6e-2 or 6e-3(T) Under The Investment Company Act of 1940
+Form N-6F	N-6F	Notice of intent by business development companies to elect to be subject to Sections 55 through 65 of the 1940 Act filed on Form N-6F
+Form N-8A	N-8A	Initial notification of registration under Section 8(a) filed on Form N-8A
+Form N-8B2	N-8B-2	Initial registration statement for unit investment trusts filed on Form N-8B-2
+Form N-8B4	N-8B-4	Initial registration statement for face-amount certificate companies filed on Form N-8B-4
+Form N-8F	N-8F	Application for deregistration made on Form N-8F
+Form N-14	N-14	"Initial registration statement filed on Form N-14 for open-end investment company, including those filed with automatic effectiveness under Rule 488 (business combinations)"
+	485APOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(a)
+	485BPOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(b)
+	N-14 8C	Initial registration statement filed on Form N-14 by closed-end investment company (business combinations)
+	POS 8C	Post-effective amendment filed under the 1933 Act only or under both the 1933 and 1940 Acts pursuant to Section 8(c) of the 1933 Act by closed-end investment companies (this filing cannot be submitted as a 1940 Act only filing)
+	497	"Definitive materials filed under paragraph (a), (b), (c), (d), (e) or (f) of Securities Act Rule 497"
+	497J	Certification of no change in definitive materials
+	N-14MEF	A new registration statement filed on Form N-14 by closed end investment companies filed under Securities Act Rule 462(b) of up to an additional 20% of securities for an offering that was registered on Form N-14
+	POS462B	Post-effective amendment to Securities Act Rule 462(b) registration statement
+	POS462C	Post-effective amendment to Securities Act Rule 462(c) registration statement
+Form 17D-1	40-17D1	"Report filed by Small Business Investment Company (SBIC) registered under the investment company act of 1940 and an affiliated bank, with respect to investments by the SBIC  and the bank, submitted pursuant to paragraph (d)(3) of rule 17d-1"
+Form 17F-1	40-17F1	Initial certificate of accounting of securities and similar investments in the custody of management investment companies filed pursuant to Rule 17f-1 of the Investment Company Act of 1940 filed on Form N-17F-1
+Form 17F-2	40-17F2	Initial certificate of accounting of securities and similar investments in the custody of management investment companies filed pursuant to Rule 17f-2 of the Investment Company Act of 1
+Form 18-F-1	N-18F1	Initial notification of election pursuant to Rule 18f-1 filed on Form N-18F-1
+Form N-23C-3	N-23C-3A	Notification of periodic repurchase offer Filed pursuant to Rule 23c-3(b) only
+	N-23C-3B	Filing pursuant to Rule 23c-3(c) only on Form N-23C-3
+	N-23C-3C	Filing pursuant to Rule 23c-3(b) and (c) on Form N-23C-3
+Form N-27D-1	N-27D-1	Accounting for segregated trust accounts on Form N-27D-1
+Form N-54A	N-54A	Notification of election by business development companies filed on Form N-54A
+Form N-54C	N-54C	Notification of withdrawal by business development companies filed on Form N-54C
+Form N-CR	N-CR	Current Report of Money Market Fund Material Events
+Form N-CSR	N-CSR	Certified annual shareholder report of registered management investment companies filed on Form N-CSR
+	N-CSRS	Certified semi-annual shareholder report of registered management investment companies filed on Form NCSR
+Form N-MFP	N-MFP	Monthly Schedule of Portfolio Holdings of Money Market Funds
+	N-MFP1	Monthly Schedule of Portfolio Holdings of Money Market Funds on Form N-MFP
+	N-MFP2	Monthly Schedule of Portfolio Holdings of Money Market Funds on Form N-MFP
+Form N-PX	N-PX	Annual Report of Proxy Voting Record of Registered Management Investment Companies filed on Form N-PX
+	N-PX-CR	Annual Form N-PX Combination Report filed by institutional managers
+	N-PX-FM	Annual Report of Proxy Voting Record of Registered Management Investment Companies that includes proxy votes institutional managers
+	N-PX-NT	Annual Form N-PX Notice filed by institutional managers
+	N-PX-VR	Annual Form N-PX Voting Report filed by institutional managers
+Form N-Q	N-Q	Quarterly Schedule of Portfolio Holdings of Registered Management Investment Company filed on Form N-Q
+Form N-SAR	N-SAR-A	Semi-annual report for management companies filed on Form N-SAR
+	N-SAR-AT	Transitional semi-annual report filed on Form N-SAR
+	N-SAR-B	Annual report for management companies filed on Form N-SAR
+	N-SAR-BT	Transitional annual report filed on Form N-SAR
+	N-SAR-U	Annual report for unit investment trusts filed on Form N-SAR
+NRSRO	NRSRO-UPD	Update of Registration for Nationally Recognized Statistical Rating Organizations
+	NRSRO-CE	Annual Certification for Nationally Recognized Statistical Rating Organizations
+	NRSRO-WCLS	Withdrawal from Credit Rating Class for Nationally Recognized Statistical Rating Organizations
+	NRSRO-WREG	Withdrawal from Registration as Nationally Recognized Statistical Rating Organization
+S-1	S-1	General form of registration statement for all companies including face-amount certificate companies
+	POS AM	Post-effective amendment to a registration statement that is not immediately effective upon filing
+	S-1MEF	A new registration statement filed under Rule 462(b) to add securities to a prior related effective registration statement filed on Form S-1
+	POS462B	Post-effective amendment to Securities Act Rule 462(b) registration statement
+S-3	S-3	Registration statement for specified transactions by certain issuers
+	POS AM	Post-effective amendment to a registration statement that is not immediately effective upon filing
+	S-3ASR	Automatic shelf registration statement of securities of well-known seasoned issuers
+	POSASR	Post-effective Amendment to an automatic shelf registration statement on Form S-3ASR or Form F-3ASR
+	S-3D	Automatically effective registration statement for securities issued pursuant to dividend or interest reinvestment plans
+	S-3DPOS	Post-effective amendment to a S-3D registration statement
+	S-3MEF	A new registration statement filed under Rule 462(b) to add securities to a prior related effective registration statement filed on Form S-3
+	POS462B	Post-effective amendment to Securities Act Rule 462(b) registration statement
+S-4	S-4	Registration of securities issued in business combination transactions
+	POS AM	Post-effective amendment to a registration statement that is not immediately effective upon filing
+	S-4EF	Auto effective registration statement for securities issued in connection with the formation of a bank or savings and loan holding company in compliance with General Instruction G
+	S-4 POS	Post-effective amendment to a S-4EF registration statement
+	S-4 MEF	A new registration statement filed under Rule 462(b) to add securities to a prior related effective registration statement filed on Form S-4
+	POS462B	Post-effective amendment to Securities Act Rule 462(b) registration statement
+Form S-6	S-6	Initial registration statement filed on Form S-6 for unit investment trusts
+	487	Pre-effective pricing amendment filed pursuant to Securities Act Rule 487
+	UNDER	Initial undertaking to file reports
+	485APOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(a)
+	485BPOS	Post-effective amendment to filing filed pursuant to Securities Act Rule 486(b)
+	485BXT	Post-effective amendment filed pursuant to Securities Act Rule 485(b)(1)(iii) to designate a new effective date for a post-effective amendment previously filed pursuant to Securities Act Rule 485(a) (this filing cannot be submitted as a 1940 Act only filing)
+	497	"Definitive materials filed under paragraph (a), (b), (c), (d), (e) or (f) of Securities Act Rule 497"
+	497J	Certification of no change in definitive materials under paragraph (j) of Securities Act Rule 497
+S-8	S-8	Initial registration statement for securities to be offered to employees pursuant to employee benefit plans
+	S-8 POS	Post-effective amendment to a S-8 registration statement
+S-11	S-11	Registration statement for securities to be issued by real estate companies
+	POS AM	Post-effective amendment to a registration statement that is not immediately effective upon filing
+	S-11MEF	A new registration statement filed under Rule 462(b) to add securities to a prior related effective registration statement filed on Form S-11
+	POS462B	Post-effective amendment to Securities Act Rule 462(b) registration statement
+S-20	S-20	Registration statement for standardized options
+	POS AM	Post-effective amendment to a registration statement that is not immediately effective upon filing
