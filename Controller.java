@@ -24,14 +24,17 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.jsoup.Jsoup;
 
 import java.io.*;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.*;
 
 public class Controller implements Initializable {
-    // Crawling thread
+    // Crawling threads
     private Thread crawl_thread;
+    private Thread word_count_thread;
 
     // Save controls
     private Boolean isSaved = false;
@@ -43,10 +46,13 @@ public class Controller implements Initializable {
     private String node1_title, node2_title, node3_title;
 
     // Preferences
+    private final String prefs1_default = "https://sec.gov/Archives/";
+    private final String prefs2_default = "5";
+    private final String prefs3_default = "5";
     private Boolean prefs_set = false;
-    private TextField prefs1 = null;
-    private TextField prefs2 = null;
-    private TextField prefs3 = null;
+    private TextField prefs1 = new TextField();
+    private TextField prefs2 = new TextField();
+    private TextField prefs3 = new TextField();
 
     // Reference UI elements
     @FXML private TextField output_fname_box;
@@ -62,9 +68,15 @@ public class Controller implements Initializable {
     @FXML private CheckBox sample_run_checkbox;
     @FXML private CheckBox group_checkbox;
     @FXML private CheckBox exclude_checkbox;
+    @FXML private CheckBox cik_include_checkbox;
+    @FXML private CheckBox legacy_csv_checkbox;
+    @FXML private TextField legacy_csv_textbox;
+    @FXML private Button browse_legacy_csv_button;
+    @FXML private TextField cik_include_box;
     @FXML private Button run_button;
     @FXML private Button stop_button;
     @FXML public ProgressBar progress_bar;
+    @FXML public Label progress_label;
     @FXML private Label running_label;
     @FXML private MenuBar menu_bar;
     @FXML private MenuItem new_men;
@@ -87,6 +99,8 @@ public class Controller implements Initializable {
         } catch (IOException e) { /* do nothing */ }
         initFilingSelectionArea();
         loadWordlistArea();
+        initOptions();
+        initPrefs();
         initRunButton();
     }
 
@@ -98,102 +112,246 @@ public class Controller implements Initializable {
         alert.show();
     }
 
+    private void initPrefs() {
+        prefs1.setText(prefs1_default);
+        prefs2.setText(prefs2_default);
+        prefs3.setText(prefs3_default);
+    }
+
+    private void initOptions() {
+        cik_include_checkbox.setOnAction(event -> {
+            cik_include_box.setDisable(!cik_include_box.isDisabled());
+
+            legacy_csv_checkbox.setDisable(
+                    sample_run_checkbox.isSelected() ||
+                            group_checkbox.isSelected() ||
+                            exclude_checkbox.isSelected() ||
+                            cik_include_checkbox.isSelected()
+            );
+        });
+
+        legacy_csv_checkbox.setOnAction(event -> {
+            legacy_csv_textbox.setDisable(!legacy_csv_textbox.isDisabled());
+            browse_legacy_csv_button.setDisable(!browse_legacy_csv_button.isDisabled());
+
+            cik_include_checkbox.setDisable(!cik_include_checkbox.isDisabled());
+            sample_run_checkbox.setDisable(!sample_run_checkbox.isDisabled());
+            group_checkbox.setDisable(!group_checkbox.isDisabled());
+            exclude_checkbox.setDisable(!exclude_checkbox.isDisabled());
+            add_wordlist_button.setDisable(!add_wordlist_button.isDisabled());
+            wordlist_area.setDisable(!wordlist_area.isDisabled());
+            output_flocation_box.setDisable(!output_flocation_box.isDisabled());
+            output_fname_box.setDisable(!output_fname_box.isDisabled());
+            browse_button.setDisable(!browse_button.isDisabled());
+            select_filings_button.setDisable(!select_filings_button.isDisabled());
+            selected_filings_gridpane.setDisable(!selected_filings_gridpane.isDisabled());
+            selected_filings_pane.setDisable(!selected_filings_pane.isDisabled());
+            year1_box.setDisable(!year1_box.isDisabled());
+            year2_box.setDisable(!year2_box.isDisabled());
+        });
+
+        browse_legacy_csv_button.setOnAction(event -> {
+            FileChooser file_chooser = new FileChooser();
+            Stage stage = new Stage();
+            stage.setTitle("Choose Perl CSV File");
+            file_chooser.setTitle("Choose Perl CSV File");
+            File default_directory = new File(System.getProperty("user.dir"));
+            file_chooser.setInitialDirectory(default_directory);
+            FileChooser.ExtensionFilter extension_filter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
+            file_chooser.getExtensionFilters().add(extension_filter);
+            File selected_file = file_chooser.showOpenDialog(stage);
+
+            try {
+                legacy_csv_textbox.setText(selected_file.toPath().toString());
+            } catch (NullPointerException e) { /* do nothing */ }
+        });
+
+        sample_run_checkbox.setOnAction(event -> {
+            legacy_csv_checkbox.setDisable(
+                    sample_run_checkbox.isSelected() ||
+                            group_checkbox.isSelected() ||
+                            exclude_checkbox.isSelected() ||
+                            cik_include_checkbox.isSelected()
+            );
+        });
+
+        group_checkbox.setOnAction(event -> {
+            legacy_csv_checkbox.setDisable(
+                    sample_run_checkbox.isSelected() ||
+                            group_checkbox.isSelected() ||
+                            exclude_checkbox.isSelected() ||
+                            cik_include_checkbox.isSelected()
+            );
+        });
+
+        exclude_checkbox.setOnAction(event -> {
+            legacy_csv_checkbox.setDisable(
+                    sample_run_checkbox.isSelected() ||
+                            group_checkbox.isSelected() ||
+                            exclude_checkbox.isSelected() ||
+                            cik_include_checkbox.isSelected()
+            );
+        });
+    }
+
     private void initRunButton() throws NullPointerException {
         run_button.setOnAction(event -> {
-            Boolean error = false;
-            // get result file
-            if (output_fname_box.getText().equals("")) {
-                error = true;
-                showError("\"Output File Name\" must have a value.");
-            } else if (output_flocation_box.getText().equals("")) {
-                error = true;
-                showError("\"Output File Location\" must have a value.");
-            }
+            if (!legacy_csv_checkbox.isSelected()) {
+                Boolean error = false;
 
-            if (!output_fname_box.getText().contains(".csv")) {
-                output_fname_box.setText(output_fname_box.getText() + ".csv");
-            }
+                // get result file
+                if (!legacy_csv_checkbox.isSelected() && output_fname_box.getText().equals("")) {
+                    error = true;
+                    showError("\"Output File Name\" must have a value.");
+                } else if (output_flocation_box.getText().equals("")) {
+                    error = true;
+                    showError("\"Output File Location\" must have a value.");
+                }
 
-            String result_file = output_flocation_box.getText() + "\\" + output_fname_box.getText();
+                if (!output_fname_box.getText().contains(".csv")) {
+                    output_fname_box.setText(output_fname_box.getText() + ".csv");
+                }
 
-            // get years
-            if (year1_box.getSelectionModel().isEmpty() || year2_box.getSelectionModel().isEmpty()) {
-                error = true;
-                showError("You must select both a start and an end year.");
-            }
+                String result_file = output_flocation_box.getText() + "\\" + output_fname_box.getText();
 
-            int year1 = year1_box.getSelectionModel().getSelectedItem();
-            int year2 = year2_box.getSelectionModel().getSelectedItem();
-            Pair<Integer, Integer> years = new Pair<>(year1, year2);
+                // get years
+                if (year1_box.getSelectionModel().isEmpty() || year2_box.getSelectionModel().isEmpty()) {
+                    error = true;
+                    showError("You must select both a start and an end year.");
+                }
 
-            // get filing types
-            ArrayList<String> filing_types = new ArrayList<>();
-            for (Node n : selected_filings_gridpane.getChildren()) {
-                if (n != null) {
-                    Label l = (Label) n;
-                    if (!l.getText().equals("Selected Filings:")) {
-                        filing_types.add(l.getText());
+                int year1 = year1_box.getSelectionModel().getSelectedItem();
+                int year2 = year2_box.getSelectionModel().getSelectedItem();
+                Pair<Integer, Integer> years = new Pair<>(year1, year2);
+
+                // get filing types
+                ArrayList<String> filing_types = new ArrayList<>();
+                for (Node n : selected_filings_gridpane.getChildren()) {
+                    if (n != null) {
+                        Label l = (Label) n;
+                        if (!l.getText().equals("Selected Filings:")) {
+                            filing_types.add(l.getText());
+                        }
                     }
                 }
-            }
 
-            if (filing_types.isEmpty()) {
-                error = true;
-                showError("You must select at least one type of filing to crawl.");
-            }
+                if (filing_types.isEmpty()) {
+                    error = true;
+                    showError("You must select at least one type of filing to crawl.");
+                }
 
-            // get wordlists
-            ArrayList<WordList> wordlists = getWordlists();
+                // get wordlists
+                ArrayList<WordList> wordlists = getWordlists();
 
-            if (wordlists.isEmpty()) {
-                error = true;
-                showError("You must add at least one wordlist.");
-            }
+                if (wordlists.isEmpty()) {
+                    error = true;
+                    showError("You must add at least one wordlist.");
+                }
 
-            // get additional options
-            Boolean op1 = false;
-            Boolean op2 = false;
-            Boolean op3 = false;
-            Boolean[] options = new Boolean[3];
-            if (sample_run_checkbox.isSelected()) {
-                op1 = true;
-            }
-            if (group_checkbox.isSelected()) {
-                op2 = true;
-            }
-            if (exclude_checkbox.isSelected()) {
-                op3 = true;
-            }
-            options[0] = op1;
-            options[1] = op2;
-            options[2] = op3;
+                // get additional options
+                Boolean op0 = false;
+                Boolean op1 = false;
+                Boolean op2 = false;
+                Boolean[] options = new Boolean[4];
+                if (sample_run_checkbox.isSelected()) {
+                    op0 = true;
+                }
+                if (group_checkbox.isSelected()) {
+                    op1 = true;
+                }
+                if (exclude_checkbox.isSelected()) {
+                    op2 = true;
+                }
 
-            // if everything looks good, start the run
-            if (!error) {
-                lockUI(true);
+                options[0] = op0;
+                options[1] = op1;
+                options[2] = op2;
+                options[3] = false;
 
-                crawl_thread = new Thread(new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        SEC_Crawler crawl_agent = new SEC_Crawler(filing_types, years, wordlists, result_file, Controller.this);
-                        crawl_agent.setOptions(options);
-                        crawl_agent.crawl();
+                // if everything looks good, start the run
+                if (!error) {
+                    lockUI(true);
 
-                        Platform.runLater(() -> {
-                            lockUI(false);
-                        });
+                    crawl_thread = new Thread(new Task<Void>() {
+                        @Override
+                        protected Void call() throws Exception {
+                            ArrayList<String> cik_list = new ArrayList<>();
+                            if (cik_include_checkbox.isSelected()) {
+                                options[3] = true;
+                                String[] ciks = cik_include_box.getText().replace(" ", "").split(",");
+                                cik_list = new ArrayList<>(Arrays.asList(ciks));
+                            }
 
-                        return null;
-                    }
-                });
+                            SEC_Crawler crawl_agent = new SEC_Crawler(filing_types, years, wordlists, result_file, cik_list, Controller.this);
+                            crawl_agent.setOptions(options);
+                            crawl_agent.setPreferences(prefs1.getText(), prefs2.getText(), prefs3.getText());
+                            crawl_agent.crawl();
 
-                crawl_thread.setDaemon(true);
-                crawl_thread.start();
+                            Platform.runLater(() -> {
+                                lockUI(false);
+
+                                String success_msg = "Run has finished.";
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Run Finished");
+                                alert.setHeaderText(null);
+                                alert.setContentText(success_msg);
+                                alert.show();
+                            });
+
+                            return null;
+                        }
+                    });
+
+                    crawl_thread.setDaemon(true);
+                    crawl_thread.start();
+                }
+            } else {
+                String perl_file_path = legacy_csv_textbox.getText();
+
+                if (perl_file_path.equals("")) {
+                    showError("Must select Perl CSV file");
+                } else {
+                    lockUI(true);
+
+                    word_count_thread = new Thread(new Task<Void>() {
+                        @Override
+                        protected Void call() throws Exception {
+                            SEC_Crawler crawl_agent = new SEC_Crawler(Controller.this);
+
+                            try {
+                                crawl_agent.crawl_word_count(perl_file_path);
+                            } catch (IOException e) { System.out.println("IOException"); }
+
+                            Platform.runLater(() -> {
+                                lockUI(false);
+
+                                String success_msg = "Word Count Run has finished.";
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Run Finished");
+                                alert.setHeaderText(null);
+                                alert.setContentText(success_msg);
+                                alert.show();
+                            });
+
+                            return null;
+                        }
+                    });
+
+                    word_count_thread.setDaemon(true);
+                    word_count_thread.start();
+                }
             }
         });
 
         stop_button.setOnAction(event -> {
-            crawl_thread.stop();
+            if (crawl_thread != null) {
+                crawl_thread.stop();
+            }
+
+            if (word_count_thread != null) {
+                word_count_thread.stop();
+            }
+
             lockUI(false);
         });
     }
@@ -213,9 +371,17 @@ public class Controller implements Initializable {
         group_checkbox.setDisable(lock);
         exclude_checkbox.setDisable(lock);
         run_button.setDisable(lock);
+        run_button.setVisible(!lock);
         progress_bar.setVisible(lock);
+        progress_label.setVisible(lock);
         running_label.setVisible(lock);
         stop_button.setVisible(lock);
+        cik_include_checkbox.setDisable(lock);
+        cik_include_box.setDisable(lock);
+        legacy_csv_checkbox.setDisable(lock);
+        browse_legacy_csv_button.setDisable(lock);
+        legacy_csv_textbox.setDisable(lock);
+
         if (!lock) {
             exit_men.setText("Exit / Stop");
         } else {
@@ -233,12 +399,14 @@ public class Controller implements Initializable {
                     int row_num = Integer.parseInt(n.getId().replaceAll("\\D+", ""));
                     if (n.getId().contains("frst_wd_")) {
                         TextField t = (TextField) n;
-                        if (number_check.contains(row_num)) {
-                            wordlists.get(number_check.indexOf(row_num)).addWord(t.getText());
-                        } else {
-                            number_check.add(row_num);
-                            wordlists.add(new WordList());
-                            wordlists.get(number_check.indexOf(row_num)).addWord(t.getText());
+                        if (!t.getText().equals("")) {
+                            if (number_check.contains(row_num)) {
+                                wordlists.get(number_check.indexOf(row_num)).addWord(t.getText());
+                            } else {
+                                number_check.add(row_num);
+                                wordlists.add(new WordList());
+                                wordlists.get(number_check.indexOf(row_num)).addWord(t.getText());
+                            }
                         }
                     } else if (n.getId().contains("$")) {
                         RadioButton r = (RadioButton) n;
@@ -271,7 +439,7 @@ public class Controller implements Initializable {
                 Stage s = new Stage();
                 Parent root = FXMLLoader.load(getClass().getResource("ui.fxml"));
                 s.setTitle("SEC Crawler");
-                s.setScene(new Scene(root, 690, 816));
+                s.setScene(new Scene(root, 700, 675));
                 s.setResizable(false);
                 s.show();
             } catch (IOException e) { /* do nothing */}
@@ -348,21 +516,17 @@ public class Controller implements Initializable {
         });
 
         prefs_men.setOnAction(event -> {
-            final String prefs1_default = "https://sec.gov/Archives/";
-            final String prefs2_default = "5";
-            final String prefs3_default = "20";
-
             Label l1 = new Label("SEC Data Location:");
             Label l2 = new Label("Define sentences to span a maximum of");
             Label l3 = new Label("Define sections to span a maximum of");
             Label l4 = new Label("lines");
             Label l5 = new Label("lines");
 
-            l1.setStyle("-fx-font: 15 calibri;");
-            l2.setStyle("-fx-font: 15 calibri;");
-            l3.setStyle("-fx-font: 15 calibri;");
-            l4.setStyle("-fx-font: 15 calibri;");
-            l5.setStyle("-fx-font: 15 calibri;");
+            l1.setStyle("-fx-font: 15 arial;");
+            l2.setStyle("-fx-font: 15 arial;");
+            l3.setStyle("-fx-font: 15 arial;");
+            l4.setStyle("-fx-font: 15 arial;");
+            l5.setStyle("-fx-font: 15 arial;");
 
             if (!prefs_set) {
                 prefs1 = new TextField(prefs1_default);
@@ -429,6 +593,8 @@ public class Controller implements Initializable {
         sample_run_checkbox.setSelected(false);
         group_checkbox.setSelected(false);
         exclude_checkbox.setSelected(false);
+        legacy_csv_checkbox.setSelected(false);
+        legacy_csv_textbox.clear();
     }
 
     private void loadSettingsFile(File f) {
@@ -464,8 +630,8 @@ public class Controller implements Initializable {
                 Node[] n_arr = new Node[words.length + 5];
 
                 Button delete_list_btn = new Button("X");
-                delete_list_btn.setStyle("-fx-font: 15 calibri; -fx-font-weight: bold; -fx-text-fill: red");
-                delete_list_btn.setMinSize(25, 20);
+                delete_list_btn.setStyle("-fx-font: 12 arial; -fx-font-weight: bold; -fx-text-fill: red");
+                delete_list_btn.setMinSize(25, 25);
                 delete_list_btn.setId("del_btn_" + Integer.toString(rows[0]));
                 delete_list_btn.setTooltip(new Tooltip("Delete this Wordlist"));
                 delete_list_btn.setOnAction(event1 -> {
@@ -505,6 +671,7 @@ public class Controller implements Initializable {
                 ToggleGroup g = new ToggleGroup();
 
                 RadioButton sentence_btn = new RadioButton("Sentence");
+                sentence_btn.setStyle("-fx-font: 12 arial;");
                 sentence_btn.setToggleGroup(g);
                 sentence_btn.setSelected(true);
                 sentence_btn.setId("$sntnce_btn_" + Integer.toString(rows[0]));
@@ -514,6 +681,7 @@ public class Controller implements Initializable {
                 n_arr[1] = sentence_btn;
 
                 RadioButton section_btn = new RadioButton("Section");
+                section_btn.setStyle("-fx-font: 12 arial;");
                 section_btn.setToggleGroup(g);
                 section_btn.setId("$sctn_btn_" + Integer.toString(rows[0]));
                 if (action_type.equals("SECT")) {
@@ -522,12 +690,15 @@ public class Controller implements Initializable {
                 n_arr[2] = section_btn;
 
                 Label words_label = new Label(" |    Words:");
+                words_label.setStyle("-fx-font: 12 arial;");
                 words_label.setId("wds_lbl_" + Integer.toString(rows[0]));
                 n_arr[3] = words_label;
 
                 for (int i = 0; i < words.length; i++) {
                     TextField first_word = new TextField();
                     first_word.setMaxWidth(100);
+                    first_word.setMinHeight(25);
+                    first_word.setMaxHeight(25);
                     first_word.setId("frst_wd_" + Integer.toString(rows[0]));
                     first_word.setText(words[i]);
                     n_arr[i + 4] = first_word;
@@ -535,7 +706,7 @@ public class Controller implements Initializable {
 
                 Button more_words_btn = new Button("+");
                 more_words_btn.setStyle("-fx-font: 15 calibri; -fx-font-weight: bold; -fx-text-fill: green");
-                more_words_btn.setMinSize(25, 20);
+                more_words_btn.setMinSize(25, 25);
                 more_words_btn.setId("more_wds_btn_" + Integer.toString(rows[0]));
                 more_words_btn.setTooltip(new Tooltip("Add another word to this Wordlist"));
                 more_words_btn.setOnAction(event1 -> {
@@ -548,6 +719,8 @@ public class Controller implements Initializable {
 
                                     TextField t = new TextField();
                                     t.setMaxWidth(100);
+                                    t.setMinHeight(25);
+                                    t.setMaxHeight(25);
                                     int row_num = Integer.parseInt(more_words_btn.getId().replaceAll("\\D+", ""));
                                     t.setId("frst_wd_" + Integer.toString(row_num));
                                     cols[0]++;
@@ -568,7 +741,15 @@ public class Controller implements Initializable {
             }
             wordlist_area.setContent(gp);
 
-            if (next_line.split(":")[1].equals("YES")) {
+            if (!next_line.split(":")[1].equals("NO")) {
+                cik_include_checkbox.setSelected(true);
+                cik_include_box.setText(next_line.split(":")[1].split("\\|")[1]);
+                cik_include_box.setDisable(false);
+            } else {
+                sample_run_checkbox.setSelected(false);
+            }
+
+            if (b.readLine().split(":")[1].equals("YES")) {
                 sample_run_checkbox.setSelected(true);
             } else {
                 sample_run_checkbox.setSelected(false);
@@ -680,6 +861,14 @@ public class Controller implements Initializable {
             p.println();
         }
 
+        p.print("CHECK0:");
+        if (cik_include_checkbox.isSelected()) {
+            p.print("YES|");
+            p.println(cik_include_box.getText());
+        } else {
+            p.println("NO");
+        }
+
         p.print("CHECK1:");
         if (sample_run_checkbox.isSelected()) {
             p.println("YES");
@@ -749,32 +938,37 @@ public class Controller implements Initializable {
 
     private GridPane addWordlist(GridPane gp, int[] rows, int[] cols) {
         Button delete_list_btn = new Button("X");
-        delete_list_btn.setStyle("-fx-font: 15 calibri; -fx-font-weight: bold; -fx-text-fill: red");
-        delete_list_btn.setMinSize(25, 20);
+        delete_list_btn.setStyle("-fx-font: 12 arial; -fx-font-weight: bold; -fx-text-fill: red");
+        delete_list_btn.setMinSize(25, 25);
         delete_list_btn.setId("del_btn_" + Integer.toString(rows[0]));
         delete_list_btn.setTooltip(new Tooltip("Delete this Wordlist"));
 
         ToggleGroup g = new ToggleGroup();
 
         RadioButton sentence_btn = new RadioButton("Sentence");
+        sentence_btn.setStyle("-fx-font: 12 arial;");
         sentence_btn.setToggleGroup(g);
         sentence_btn.setSelected(true);
         sentence_btn.setId("$sntnce_btn_" + Integer.toString(rows[0]));
 
         RadioButton section_btn = new RadioButton("Section");
+        section_btn.setStyle("-fx-font: 12 arial;");
         section_btn.setToggleGroup(g);
         section_btn.setId("$sctn_btn_" + Integer.toString(rows[0]));
 
         Label words_label = new Label(" |    Words:");
+        words_label.setStyle("-fx-font: 12 arial;");
         words_label.setId("wds_lbl_" + Integer.toString(rows[0]));
 
         TextField first_word = new TextField();
         first_word.setMaxWidth(100);
+        first_word.setMinHeight(25);
+        first_word.setMaxHeight(25);
         first_word.setId("frst_wd_" + Integer.toString(rows[0]));
 
         Button more_words_btn = new Button("+");
-        more_words_btn.setStyle("-fx-font: 15 calibri; -fx-font-weight: bold; -fx-text-fill: green");
-        more_words_btn.setMinSize(25, 20);
+        more_words_btn.setStyle("-fx-font: 12 arial; -fx-font-weight: bold; -fx-text-fill: green");
+        more_words_btn.setMinSize(25, 25);
         more_words_btn.setId("more_wds_btn_" + Integer.toString(rows[0]));
         more_words_btn.setTooltip(new Tooltip("Add another word to this Wordlist"));
 
@@ -788,6 +982,8 @@ public class Controller implements Initializable {
 
                             TextField f = new TextField();
                             f.setMaxWidth(100);
+                            f.setMinHeight(25);
+                            f.setMaxHeight(25);
                             int row_num = Integer.parseInt(more_words_btn.getId().replaceAll("\\D+", ""));
                             f.setId("frst_wd_" + Integer.toString(row_num));
                             cols[0]++;
@@ -872,29 +1068,29 @@ public class Controller implements Initializable {
             sp.setStyle("-fx-font-size: 15;");
 
             Label pre_n1 = new Label(node1_title);
-            pre_n1.setStyle("-fx-font: 14 calibri; -fx-font-weight: bold;");
+            pre_n1.setStyle("-fx-font: 14 arial; -fx-font-weight: bold;");
             pre_n1.setPadding(new Insets(3, 20, 3, 10));
             Label pre_n2 = new Label(node2_title);
-            pre_n2.setStyle("-fx-font: 14 calibri; -fx-font-weight: bold;");
+            pre_n2.setStyle("-fx-font: 14 arial; -fx-font-weight: bold;");
             pre_n2.setPadding(new Insets(3, 20, 3, 0));
             Label pre_n3 = new Label(node3_title);
-            pre_n3.setStyle("-fx-font: 14 calibri; -fx-font-weight: bold;");
+            pre_n3.setStyle("-fx-font: 14 arial; -fx-font-weight: bold;");
             pre_n3.setPadding(new Insets(3, 0, 3, 0));
 
             gp.addRow(0, pre_n1, pre_n2, pre_n3);
 
             for (int i = 1; i < FILING_TYPES.size(); i++) {
                 Label n1 = new Label(FILING_TYPES.get(i));
-                n1.setStyle("-fx-font: 14 calibri; -fx-font-style: italic;");
+                n1.setStyle("-fx-font: 14 arial; -fx-font-style: italic;");
                 n1.setPadding(new Insets(3, 20, 3, 10));
                 CheckBox n2 = new CheckBox(FILING_DESCRIPTIONS.get(i).getKey());
                 if (containsNode(selected_filings_gridpane, n2.getText())) {
                     n2.setSelected(true);
                 }
-                n2.setStyle("-fx-font: 14 calibri;");
+                n2.setStyle("-fx-font: 14 arial;");
                 n2.setPadding(new Insets(3, 20, 3, 0));
                 Label n3 = new Label(FILING_DESCRIPTIONS.get(i).getValue());
-                n3.setStyle("-fx-font: 14 calibri;");
+                n3.setStyle("-fx-font: 14 arial;");
                 n3.setPadding(new Insets(3, 0, 3, 0));
 
                 n2.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -930,12 +1126,12 @@ public class Controller implements Initializable {
 
     private void addFiling(String s) {
         Label l = new Label(s);
-        l.setStyle("-fx-font: 25 calibri; -fx-background-color: lightblue; -fx-border-style: solid");
-        int r = new Random().nextInt(5);
+        l.setStyle("-fx-font: 20 arial; -fx-background-color: lightblue; -fx-border-style: solid");
+        int r = new Random().nextInt(3);
         int c = new Random().nextInt(3);
 
         while (getNode(selected_filings_gridpane, c, r) != null) {
-            r = new Random().nextInt(5);
+            r = new Random().nextInt(3);
             c = new Random().nextInt(3);
         }
 
@@ -943,8 +1139,10 @@ public class Controller implements Initializable {
     }
 
     private void initYearArea() {
-        Integer[] year_list = new Integer[22];
-        for (int i = 0; i < 22; i++) {
+        int max_year = Calendar.getInstance().get(Calendar.YEAR) + 1;
+        int num_years = max_year - 1996;
+        Integer[] year_list = new Integer[num_years];
+        for (int i = 0; i < num_years; i++) {
             year_list[i] = i + 1996;
         }
 

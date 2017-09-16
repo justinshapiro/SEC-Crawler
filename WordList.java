@@ -22,73 +22,134 @@ class WordList {
     }
 
     ArrayList<ArrayList<Integer>> getProximitySet(int threshold) {
-        /*
-         * A Proximity Set is a set whose members belong in only one set that does not
-         * contain any other members that share the same Proximity Set. Members of a Proximity Set
-         * are in defined proximity, within a distance m each other.
-         * The cardinality of a proximity set is equal to the amount of sets that form it.
-         */
+    /*
+     * A Proximity Set is a set whose members belong in only one set that does not
+     * contain any other members that share the same Proximity Set. Members of a Proximity Set
+     * are in defined proximity, within a distance m each other.
+     * The cardinality of a proximity set is equal to the amount of sets that form it.
+     */
+        ArrayList<ArrayList<Integer>> instanceSets = new ArrayList<>();
 
-        // if any of the lists are empty, there cannot be a proximity set
-        Boolean isFull = true;
+        // if any of the instance sets are empty, a proximity set cannot exist
+        Boolean noSetsAreEmpty = true;
         for (Word w : LIST) {
             if (w.getInstances().isEmpty()) {
-                isFull = false;
+                noSetsAreEmpty = false;
+                break;
+            } else {
+                instanceSets.add(w.getInstances());
             }
         }
 
-        // if all lists have size of at least one:
-        if (isFull) {
-            // lists arrive sorted in increasing order, sort all lists based on their first element
-            LIST.sort(Comparator.comparing(w -> w.getInstances().get(0)));
+        // if none of the instance sets are empty, proceed
+        if (noSetsAreEmpty) {
+            // sort all instance sets based on their first element
+            instanceSets.sort(Comparator.comparing(w -> w.get(0)));
+            Boolean endOfInstanceSet = false;
 
-            // create index sets that specifically iterate each list independently
-            ArrayList<Integer> idx_set = new ArrayList<>();
-            for (int i = 0; i < LIST.size(); i++) {
-                idx_set.add(0);
-            }
+            // the pivot set is the instance set whose first element is the lowest out of all the instance sets
+            ArrayList<Integer> pivotSet = instanceSets.get(0);
+            int pivot_element;
 
-            // if the index corresponding to its list is grows to be greater than
-            // the size of the list, all indices are not valid and no Proximity Set can exist
-            Boolean listEnd = false;
-            for (int j = 0; j < LIST.size(); j++) {
-                if (idx_set.get(j) >= LIST.get(j).getInstances().size()) {
-                    listEnd = true;
-                }
-            }
+            // the trial set is the first set we attempt to traverse
+            ArrayList<Integer> trialSet;
+            int trial_element;
 
-            // no sets are empty and all indices in the index set are valid, so we search for the Proximity Set
-            if (!listEnd) {
-                // traverse the lists:
-                Boolean good_traverse = true;
-                int last_inst = LIST.get(0).getInstances().get(idx_set.get(0));
-                for (int j = 1; j < LIST.size(); j++) {
-                    int curr_inst = LIST.get(j).getInstances().get(idx_set.get(j));
-                    if (Math.abs(curr_inst - last_inst) > threshold) {
-                        // traverse segment fails,
-                        good_traverse = false;
-                        // change the faulting index and start another traverse from the beginning
-                        idx_set.set(j, idx_set.get(j) + 1);
+            // the candidate set keeps track of the traverse and is a potential subset of the proximity set
+            ArrayList<Integer> candidateSet = new ArrayList<>();
+            Boolean testCandidateSet = false;
+            int traversing_idx = 1;
+
+            while (!endOfInstanceSet) {
+                pivot_element = pivotSet.get(0);
+                trialSet = instanceSets.get(traversing_idx);
+
+                for (int i = 0; i < trialSet.size(); i++) {
+                    trial_element = trialSet.get(i);
+                    int curr_dist = Math.abs(pivot_element - trial_element);
+
+                    // if the distance between numbers is not within the threshold,
+                    if (curr_dist > threshold) {
+                        // if the current_element is greater than or equal to the pivot, the current traverse is bad
+                        if (trial_element >= pivot_element) {
+                            pivotSet.remove(0);
+
+                            if (pivotSet.isEmpty()) {
+                                endOfInstanceSet = true;
+                            } else {
+                                instanceSets.set(0, pivotSet);
+                            }
+
+                            candidateSet.clear();
+                            traversing_idx = 1;
+                            break;
+                        }
+                    }
+
+                    // the distance between elements is within the threshold, so we continue the traverse
+                    else {
+                        candidateSet.add(trial_element);
+                        if (traversing_idx == instanceSets.size() - 1) {
+                            testCandidateSet = true;
+                        } else {
+                            traversing_idx++;
+                        }
                         break;
-                    } else {
-                        // current traverse segment succeeds, resume traverse
-                        last_inst = curr_inst;
+                    }
+
+                    if (i == trialSet.size() - 1) {
+                        endOfInstanceSet = true;
                     }
                 }
 
-                // if the traverse was successful, we have found a Proximity Set
-                if (good_traverse) {
-                    ArrayList<Integer> curr_proximity = new ArrayList<>();
-                    for (int j = 0; j < idx_set.size(); j++) {
-                        curr_proximity.add(LIST.get(j).getInstances().get(idx_set.get(j)));
+                if (testCandidateSet) {
+                    int curr_dist = 0;
+                    for (int i = 0; i < candidateSet.size(); i++) {
+                        for (int j = 0; j < candidateSet.size(); j++) {
+                            if (i != j) {
+                                int element_1 = candidateSet.get(i);
+                                int element_2 = candidateSet.get(j);
+                                curr_dist = Math.abs(element_1 - element_2);
+
+                                if (curr_dist > threshold) {
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (curr_dist > threshold) {
+                            break;
+                        }
                     }
 
-                    PROXIMITY_SET.add(curr_proximity);
-
-                    // increment all indices by one
-                    for (int k = 0; k < idx_set.size(); k++) {
-                        idx_set.set(k, idx_set.get(k) + 1);
+                    if (curr_dist <= threshold) {
+                        candidateSet.add(0, pivot_element);
+                        PROXIMITY_SET.add(new ArrayList<>(candidateSet));
                     }
+
+                    for (Integer candidate_element : candidateSet) {
+                        for (ArrayList<Integer> instanceSet : instanceSets) {
+                            if (instanceSet.contains(candidate_element)) {
+                                instanceSet.remove(candidate_element);
+                                if (instanceSet.isEmpty()) {
+                                    endOfInstanceSet = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (endOfInstanceSet) {
+                            break;
+                        }
+                    }
+
+                    if (pivotSet.isEmpty()) {
+                        endOfInstanceSet = true;
+                    }
+
+                    candidateSet.clear();
+                    traversing_idx = 1;
+                    testCandidateSet = false;
                 }
             }
         }

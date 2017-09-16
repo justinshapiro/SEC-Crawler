@@ -12,12 +12,12 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class Main extends Application {
-
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("ui.fxml"));
         primaryStage.setTitle("SEC Crawler");
-        primaryStage.setScene(new Scene(root, 690, 816));
+        primaryStage.setScene(new Scene(root, 700, 675));
+
         primaryStage.setResizable(false);
         primaryStage.show();
 
@@ -37,7 +37,7 @@ public class Main extends Application {
         });
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         launch(args);
     }
 }

@@ -29,6 +29,12 @@ Schedule 13G	SC 13G	Schedule filed to report acquisition of beneficial ownership
 	13H-I	Inactive Status
 	13H-R	Reactivated Status
 	13H-T	Termination Filing
+DEF 14A	DEF 14A	Definitive proxy statements
+	DEFA14A	Definitive additional proxy soliciting materials including Rule 14(a)(12) material
+	DEFC14A	Definitive proxy statement in connection with contested solicitations
+	DEFM14A	Definitive proxy statement relating to a merger, acquisition, or disposition
+	DEFN14A	Definitive proxy statement filed by non-management
+	DEFR14A	Definitive revised proxy soliciting materials
 20-F	20-F	Annual and transition report of foreign private issuers pursuant to Section 13 or 15(d)
 	20FR12B	Form for initial registration of a class of securities of foreign private issuers pursuant to Section 12(b)
 	20FR12G	Form for initial registration of a class of securities of foreign private issuers pursuant to Section 12(g)
